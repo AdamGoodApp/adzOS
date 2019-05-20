@@ -2,7 +2,7 @@
 # It is not intended for manual editing.
 [[package]]
 name = "adz_os"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bootloader 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
