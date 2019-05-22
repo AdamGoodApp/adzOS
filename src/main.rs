@@ -10,7 +10,8 @@ static WELCOME_TEXT: &str = "Welcome to ADZ OS!";
 // new entry point, linker looks for _start by default
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-  vga_buffer::print_something(WELCOME_TEXT);
+  println!("{}", WELCOME_TEXT);
+  println!("version: 2.3");
 
   loop {}
 }
