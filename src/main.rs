@@ -1,15 +1,11 @@
 #![no_std] // disable linking to the standard library
 #![no_main] // disable all Rust-level entry points
 #![feature(custom_test_frameworks)]
-#![test_runner(crate::test_runner)]
+#![test_runner(adz_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
-mod vga_buffer;
-mod power_manager;
-mod serial;
-
 use core::panic::PanicInfo;
-use power_manager::{QemuExitCode, exit_qemu};
+use adz_os::println;
 
 static WELCOME_TEXT: &str = "Welcome to ADZ OS!";
 
@@ -33,23 +29,8 @@ fn panic(info: &PanicInfo) -> ! {
   loop {}
 }
 
-// our panic handler in test mode
 #[cfg(test)]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    serial_println!("[failed]\n");
-    serial_println!("Error: {}\n", info);
-    exit_qemu(QemuExitCode::Failed);
-    loop {}
-}
-
-#[cfg(test)]
-fn test_runner(tests: &[&dyn Fn()]) {
-    serial_println!("Running {} tests", tests.len());
-    
-    for test in tests {
-      test();
-    }
-
-    exit_qemu(QemuExitCode::Success);
+  adz_os::test_panic_handler(info)
 }
