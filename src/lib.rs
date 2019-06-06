@@ -58,7 +58,9 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
   }
 }
 
+// Initialized GDT table that handles loading the TSS table
 // Initializes IDT table for CPU exceptions
 pub fn init() {
+  gdt::init();
   interrupts::init_idt();
 }
