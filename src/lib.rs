@@ -3,9 +3,12 @@
 #![feature(custom_test_frameworks)]
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
+#![feature(abi_x86_interrupt)]
 
 pub mod serial;
 pub mod vga_buffer;
+pub mod interrupts;
+pub mod gdt;
 
 use core::panic::PanicInfo;
 
@@ -13,6 +16,7 @@ use core::panic::PanicInfo;
 #[cfg(test)]
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
+  init();
   test_main();
   loop {}
 }
@@ -52,4 +56,11 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
     let mut port = Port::new(0xf4);
     port.write(exit_code as u32);
   }
+}
+
+// Initialized GDT table that handles loading the TSS table
+// Initializes IDT table for CPU exceptions
+pub fn init() {
+  gdt::init();
+  interrupts::init_idt();
 }
